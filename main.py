@@ -1,21 +1,24 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from modelos.clientes import Cliente, ClienteCrear
 
 app = FastAPI()
 
-@app.get("/")
-def inicio():
-    return {"mensaje": "este es el proyecto de clientes a desarrollar"}
+lista_clientes:list[Cliente] = []
 
 
-@app.get("/clientes")
-def obtener_clientes():
-    clientes = [
-        {"id": 1, "nombre": "Maria Esperanza",  "email": "Espe@email.com",  "ciudad": "Bogotá",       "telefono": "300-111-2233"},
-        {"id": 2, "nombre": "Juan Felipe",     "email": "jf49@email.com",     "ciudad": "Bogotá",     "telefono": "311-222-3344"},
-        {"id": 3, "nombre": "Eddy caro",     "email": "caropro@email.com",     "ciudad": "Cali",         "telefono": "322-333-4455"},
-        {"id": 4, "nombre": "lolalolita",  "email": "lolaloa@email.com",  "ciudad": "Cartagena",    "telefono": "333-444-5566"},
-        {"id": 5, "nombre": "Diego Herrera",   "email": "diego.herrera@email.com",   "ciudad": "Barranquilla", "telefono": "344-555-6677"},
-        {"id": 6, "nombre": "Camila Torres",   "email": "camila.torres@email.com",   "ciudad": "Bucaramanga",  "telefono": "355-666-7788"},
-        {"id": 7, "nombre": "Sebastián López", "email": "sebastian.lopez@email.com", "ciudad": "Manizales",    "telefono": "366-777-8899"},
-    ]
-    return {"status": "success", "total": len(clientes), "data": clientes}
+
+@app.get("/clientes", response_model=list[Cliente])
+def listar_clientes():
+    return lista_clientes
+
+@app.get("/clientes/{cliente_id}", response_model=Cliente)
+def listar_cliente(cliente_id: int):
+    for i, obj_cliente in enumerate(lista_clientes):
+        if obj_cliente.get("id") == cliente_id:
+            return obj_cliente
+
+@app.post("/clientes", response_model=Cliente)
+def crear_cliente(datos_cliente: ClienteCrear):
+    Cliente_val = Cliente.model_validate(datos_cliente.model_dump())
+    lista_clientes.append(Cliente_val)
+    return Cliente_val
