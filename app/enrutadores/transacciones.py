@@ -2,6 +2,8 @@ from fastapi import  APIRouter, HTTPException, status
 from modelos.transacciones import Transaccion, TransaccionCrear, TransaccionEditar
 from modelos.facturas import Factura
 from listas import lista_facturas, lista_transacciones
+from conexion_bd import Session_dependencia
+from sqlmodel import select
 
 rutas_transacciones = APIRouter()  
 
@@ -9,8 +11,11 @@ rutas_transacciones = APIRouter()
 #lista_transacciones: list[Transaccion] = []
 
 @rutas_transacciones.get("/transacciones", response_model=list[Transaccion])
-async def listar_Transacciones():
-    return lista_transacciones
+async def listar_Transacciones(sesion: Session_dependencia):
+    #consulta = select(Transaccion)
+    #lista_transacciones = sesion.exec(consulta).all()
+    #return lista_transacciones
+    return sesion.exec(select(Transaccion)).all()
 
 
 @rutas_transacciones.get("/transacciones/{id_transacciones}", response_model=Transaccion)
@@ -25,25 +30,22 @@ async def listar_Transaccion(id_transaccion: int):
 
 
 @rutas_transacciones.post("/transacciones{id_transacciones}", response_model=Transaccion)
-async def crear_Transaccion(factura_id: int, datos_transaccion: TransaccionCrear):
-     factura_encontrada = None
-     for factura in lista_facturas:
-        if factura.id == factura_id:
-            factura_encontrada = factura
-
+async def crear_Transaccion(factura_id: int, datos_transaccion: TransaccionCrear, sesion: Session_dependencia):
+     
+     factura_encontrada = sesion.get(Factura, factura_id)
      if not factura_encontrada:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"La factura con id {factura_id}, no existe."
         )
     
-     transaccion_val = Transaccion.model_validate(datos_transaccion.model_dump())
-     transaccion_val.factura_id = factura_id
-     factura_encontrada.transacciones.append(transaccion_val)
+     transaccion_dict = datos_transaccion.model_dump()
+     transaccion_dict["factura_id"] = factura_id
+     transaccion_val = Transaccion.model_validate(transaccion_dict)
 
-     transaccion_val.id = len(lista_transacciones)+1
-     
-     lista_transacciones.append(transaccion_val)
+     sesion.add(transaccion_val)
+     sesion.commit()
+     sesion.refresh(transaccion_val)
      return transaccion_val
 
 
