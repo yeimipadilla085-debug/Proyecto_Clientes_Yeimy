@@ -1,189 +1,139 @@
-#royecto: YeimyPadilla pro clientes
+# TECNOLOGIA: FastAPI
 
-##Datos Personales
-* **Nombre:** Yeimy Alejandra Padilla Gutierrez
-* **Programa:**  Analisis y desarrollo de Software / 3407180
-* **Fecha:** Mayo 26 2026
+# AUTOR: Instructor Santiago Buitrago Goyeneche
 
+# DESCRIPCION: Sistema de Gestión de Facturación y Transacciones (API de Aprendizaje)
 
+## Contexto
 
-#PROYECTO_Clientes — API REST con FastAPI
+El proyecto simula el núcleo financiero de una plataforma comercial. Trabajaremos con tres entidades principales, simulando al inicio una relación como BD:
 
-API REST desarrollada con **FastAPI**, **SQLModel** y **SQLite** para la gestión de clientes, facturas y transacciones. Proyecto académico realizado como parte del programa de formación en el **SENA**, con el objetivo de poner en práctica el desarrollo de APIs REST, modelado relacional de datos y persistencia en base de datos con Python.
-
----
-
-##Contexto académico
-
-Este proyecto fue desarrollado durante el proceso de aprendizaje del programa de formación del SENA, como ejercicio práctico para aplicar los siguientes conceptos:
-
-- Diseño y construcción de una API REST con FastAPI.
-- Definición de modelos de datos y relaciones (uno a muchos) usando SQLModel.
-- Persistencia de datos en una base de datos relacional (SQLite).
-- Organización de un proyecto backend en módulos (enrutadores y modelos).
-- Uso de control de versiones con Git y GitHub.
+1. **Clientes:** (id, nombre, email, descripcion)
+2. **Facturas:** (id, fecha, vr_total, cliente)
+3. **Transacciones:** (id, cantidad, vr_unitario, id_factura)
 
 ---
 
-##Tecnologías utilizadas
+## REQUISITOS 
 
-- **Python 3.14**
-- **FastAPI** — framework para construir la API
-- **SQLModel** — ORM que combina SQLAlchemy y Pydantic para el modelado de datos
-- **SQLite** — motor de base de datos relacional, usado en desarrollo
-- **Pydantic v2** — validación de datos
-- **Uvicorn** — servidor ASGI para ejecutar la aplicación
+1- PYTHON 3,12
+2- GIT RECOMENDADO
+3- Gestion de entornos virtuales ('venv')
+4- Instalar Fastapi[standard]
 
----
+## CREAR LOS ENDPOINT DEL PROYECTO CLIENTES PARA REALIZAR EL CRUD: EDITANDO EL ARCHIVO MAIN.PY 
 
-##Estructura del proyecto
+## Creamos una lista_clientes de python (estatica)
 
-```
-PROYECTO_Clientes/
+1. Crear el endpoint listar_clientes, obtener todos los clientes de la lista_clientes. #CHECK
+
+2. Crear el endpoint listar_cliente, obtener un solo cliente de la lista_clientes.
+   NOTA: se puede ir borrando los datos de la lista_clientes, pero no la variable.
+
+3. Crear endpoint crear_clientes, enviar datos del cliente y guardarlos en la lista_clientes.
+   NOTA: Tener en cuenta el typing o tipado de datos para la lista_clientes y el modelo que se construirá.
+
+4. Crear una **clase o modelo** llamado `clientes` como se indica en la línea 13 de este archivo.
+
+5. Editar la lista_clientes aplicando typing.
+
+6. Editar endpoint crear_clientes aplicando typing.
+
+7. Comprobar el funcionamiento de crear_clientes.
+
+Se edito el endpoint listar una sola factura , y el manej de excepciones
+
+# 9 =================
+
+# Editar el endpoint crear factura, segun el modelo 
+
+1. Editar el endpoint crear_facutra
+
+2. comprobar el funcionamiento  
+
+#10 =================
+
+# Editar el endpoint crear_factura, según el modelo -- Continuación
+
+1. Edición del método vr_total del modelo facturas, para que haga el cálculo a las transacciones que pertenecen a esa factura.
+   Para comprobar el funcionamiento del método vr_total debemos:
+2. Editar endpoint de crear transacciones, también puede editar el de listar todas las transacciones.
+3. Comprobar funcionamiento.
+
+**Ejercicio Terminar, los endpoint de modificar y eliminar**
+
+proyecto_clientes/
+│
 ├── app/
-│   ├── main.py                  # Punto de entrada de la API
-│   ├── conexion_bd.py           # Configuración y conexión a la base de datos
-│   ├── bd_clientes.squlite3     # Base de datos SQLite (generada automáticamente)
-│   ├── enrutadores/
-│   │   ├── clientes.py          # Rutas (endpoints) de Cliente
-│   │   ├── facturas.py          # Rutas (endpoints) de Factura
-│   │   └── transacciones.py     # Rutas (endpoints) de Transaccion
-│   └── modelos/
-│       ├── clientes.py          # Modelo de datos de Cliente
-│       ├── facturas.py          # Modelo de datos de Factura
-│       └── transacciones.py     # Modelo de datos de Transaccion
-├── venv/                        # Entorno virtual (no incluido en git)
-├── .gitignore
-├── requeriments.txt
-└── README.md
-```
+│   ├── __init__.py
+│   ├── main.py                # Punto de entrada de FastAPI
+│   ├── conexion_bd.py         # Configuración de la base de datos
+│   │
+│   ├── modelos/               # Modelos SQLAlchemy
+│   │   ├── __init__.py
+│   │   ├── clientes.py
+│   │   ├── facturas.py
+│   │   └── transacciones.py
+│   │
+│   ├── esquemas/              # Modelos Pydantic
+│   │   ├── __init__.py
+│   │   ├── clientes.py
+│   │   ├── facturas.py
+│   │   └── transacciones.py
+│   │
+│   ├── enrutador/             # Endpoints (APIRouter)
+│   │   ├── __init__.py
+│   │   ├── clientes.py
+│   │   ├── facturas.py
+│   │   └── transacciones.py
+│   │
+│   ├── crud/                  # Funciones para acceder a la BD
+│   │   ├── __init__.py
+│   │   ├── clientes.py
+│   │   ├── facturas.py
+│   │   └── transacciones.py
+│   │
+│   └── dependencias.py        # Dependencias (get_db, autenticación, etc.)
+│
+├── .venv/
+├── requirements.txt
+├── README.md
+└── .gitignore
 
----
-
-##Instalación y ejecución
-
-### 1. Clona el repositorio
-
-```bash
-git clone https://github.com/yeimipadilla085-debug/YeimyPadilla_pro_cliente-py.git
-cd nombre-pro-clientes
-```
-
-### 2. Crea y activa el entorno virtual
-
-```bash
-python -m venv venv
-./venv/Scripts/activate   # Windows
-source venv/bin/activate  # Mac/Linux
-```
-
-### 3. Instala las dependencias
-
-```bash
-pip install -r requeriments.txt
-```
-
-### 4. Ejecuta el servidor
-
-Desde la carpeta raíz del proyecto:
-
-```bash
 fastapi dev app/main.py
-```
 
-Al iniciar, la aplicación crea automáticamente la base de datos y sus tablas (si no existen todavía) en `app/bd_clientes.squlite3`.
+# Manejo de Enrutadores o Routers
 
-### 5. Abre la documentación interactiva
+☼
 
-```
-http://127.0.0.1:8000/docs
-```
+1. Editar los archivos de la carpeta enrutador (instanciar la clase ROUTER)
+2. Cortar el código de las rutas del archivo main.py y copiarlos según corresponda
+3. Comprobar las rutas ahora no existen en la UI de Swagger
+4. Incluir en main.py las rutas
 
-Desde ahí puedes probar todos los endpoints directamente con la interfaz de **Swagger UI**.
+# 13 =================
 
----
+# Manejo de BD
 
-#Endpoints disponibles
+**mysql+pymysql://usuario:contraseña@host:puerto/nombre_bd**
+**postgresql://usuario:contraseña@host:puerto/nombre_bd**
+**sqlite:///nombre_bd.sqlite3**
 
-### Clientes
+1. Instalar Dependencia sqlmodel // pip install sqlmodel (En caso que no aparezca sigue estos pasos: 
+- Ctrl + Shift + P 
+- Python: Select Interpreter
+- Después reinicia VS Code.
+- python -m pip install sqlmodel)
+https://sqlmodel.tiangolo.com/
+2. Editar el requirements.txt
+3. Editar el archivo conexion_bd.py, nombre bd, url bd, motor, crear sesion, inyeccion dependencia, definir método para crear las tablas.
+4. Editar el archivo enrutador cliente, importar la dependencia de sesión creada anteriormente, y utilizar el add, commit, y refresh de la sesión, y poder guardar los datos en la bd.
+5. Editar el archivo modelo cliente, con las propiedades de SqlModel.
+6. Editar archivo main.py, e importar el método crear las tablas.
+7. Comprobar el funcionamiento.
 
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| GET | `/clientes` | Lista todos los clientes |
-| GET | `/clientes/{cliente_id}` | Obtiene un cliente por ID |
-| POST | `/clientes` | Crea un nuevo cliente |
-| PATCH | `/clientes/{cliente_id}` | Edita un cliente existente |
-| DELETE | `/clientes/{cliente_id}` | Elimina un cliente |
+sqlite
 
-### Facturas
-
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| GET | `/facturas` | Lista todas las facturas |
-| GET | `/facturas/{factura_id}` | Obtiene una factura por ID |
-| POST | `/facturas/{cliente_id}` | Crea una factura para un cliente |
-| PATCH | `/facturas/{id_factura}` | Edita una factura |
-| DELETE | `/facturas/{id_factura}` | Elimina una factura |
-
-### Transacciones
-
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| GET | `/transacciones` | Lista todas las transacciones |
-| GET | `/transacciones/{id}` | Obtiene una transacción por ID |
-| POST | `/transacciones/{factura_id}` | Crea una transacción asociada a una factura |
-| PATCH | `/transacciones/{id}` | Edita una transacción |
-| DELETE | `/transacciones/{id}` | Elimina una transacción |
-
----
-
-#Modelos de datos
-
-### Cliente
-```json
-{
-  "id": 1,
-  "nombre": "Juan Pérez",
-  "email": "juan@email.com",
-  "descripcion": "Cliente frecuente"
-}
-```
-
-### Factura
-```json
-{
-  "id": 1,
-  "fecha": "2026-06-22",
-  "cliente_id": 1,
-  "cliente": { ... },
-  "transacciones": [ ... ],
-  "vr_total": 150000.0
-}
-```
-
-### Transacción
-```json
-{
-  "id": 1,
-  "factura_id": 1,
-  "cantidad": 3,
-  "vr_unitario": 50000.0,
-  "descripcion": "Detalle de la transacción"
-}
-```
-
----
-
-##Relaciones entre entidades
-
-- Un **Cliente** puede tener muchas **Facturas** (relación uno a muchos).
-- Una **Factura** puede tener muchas **Transacciones** (relación uno a muchos).
-- El campo `vr_total` de una **Factura** se calcula automáticamente como la suma de `cantidad * vr_unitario` de todas sus transacciones asociadas, mediante un `computed_field`.
-
----
-
-##Notas
-
-- Los datos se almacenan de forma persistente en una base de datos SQLite (`app/bd_clientes.squlite3`), no en memoria.
-- Las tablas se crean automáticamente al iniciar la aplicación (`crear_tablas` en `conexion_bd.py`), siempre y cuando no existan previamente. Si se modifica un modelo (por ejemplo, se agrega una nueva columna), es necesario eliminar el archivo de base de datos para que se regenere con la nueva estructura, ya que el proyecto aún no implementa migraciones (por ejemplo, con Alembic).
-
+ sqlite3 .\bd_Cliente.sqlite3
+ .table 
+select * from cliente; 
