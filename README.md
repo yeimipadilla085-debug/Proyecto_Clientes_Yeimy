@@ -1,30 +1,49 @@
 # 📦 PROYECTO_Clientes — API REST con FastAPI
 
-API REST desarrollada con **FastAPI** y **Python** para la gestión de clientes, facturas y transacciones.
+API REST desarrollada con **FastAPI**, **SQLModel** y **SQLite** para la gestión de clientes, facturas y transacciones. Proyecto académico realizado como parte del programa de formación en el **SENA**, con el objetivo de poner en práctica el desarrollo de APIs REST, modelado relacional de datos y persistencia en base de datos con Python.
 
 ---
 
-##Tecnologías utilizadas
+## 📚 Contexto académico
 
-- Python 3.14
-- FastAPI
-- Pydantic v2
-- Uvicorn
+Este proyecto fue desarrollado durante el proceso de aprendizaje del programa de formación del SENA, como ejercicio práctico para aplicar los siguientes conceptos:
+
+- Diseño y construcción de una API REST con FastAPI.
+- Definición de modelos de datos y relaciones (uno a muchos) usando SQLModel.
+- Persistencia de datos en una base de datos relacional (SQLite).
+- Organización de un proyecto backend en módulos (enrutadores y modelos).
+- Uso de control de versiones con Git y GitHub.
 
 ---
 
-##Estructura del proyecto
+## 🛠️ Tecnologías utilizadas
+
+- **Python 3.14**
+- **FastAPI** — framework para construir la API
+- **SQLModel** — ORM que combina SQLAlchemy y Pydantic para el modelado de datos
+- **SQLite** — motor de base de datos relacional, usado en desarrollo
+- **Pydantic v2** — validación de datos
+- **Uvicorn** — servidor ASGI para ejecutar la aplicación
+
+---
+
+## 📂 Estructura del proyecto
 
 ```
 PROYECTO_Clientes/
 ├── app/
-│   ├── main.py              # Endpoints principales de la API
-│   └── conexion_bd.py       # Conexión a base de datos (en desarrollo)
-├── modelos/
-│   ├── clientes.py          # Modelo de Cliente
-│   ├── facturas.py          # Modelo de Factura
-│   └── transacciones.py     # Modelo de Transaccion
-├── venv/                    # Entorno virtual (no incluido en git)
+│   ├── main.py                  # Punto de entrada de la API
+│   ├── conexion_bd.py           # Configuración y conexión a la base de datos
+│   ├── bd_clientes.squlite3     # Base de datos SQLite (generada automáticamente)
+│   ├── enrutadores/
+│   │   ├── clientes.py          # Rutas (endpoints) de Cliente
+│   │   ├── facturas.py          # Rutas (endpoints) de Factura
+│   │   └── transacciones.py     # Rutas (endpoints) de Transaccion
+│   └── modelos/
+│       ├── clientes.py          # Modelo de datos de Cliente
+│       ├── facturas.py          # Modelo de datos de Factura
+│       └── transacciones.py     # Modelo de datos de Transaccion
+├── venv/                        # Entorno virtual (no incluido en git)
 ├── .gitignore
 ├── requeriments.txt
 └── README.md
@@ -32,7 +51,7 @@ PROYECTO_Clientes/
 
 ---
 
-##Instalación y ejecución
+## ⚙️ Instalación y ejecución
 
 ### 1. Clona el repositorio
 
@@ -57,10 +76,13 @@ pip install -r requeriments.txt
 
 ### 4. Ejecuta el servidor
 
+Desde la carpeta raíz del proyecto:
+
 ```bash
-cd app
-../venv/Scripts/python -m fastapi dev main.py
+fastapi dev app/main.py
 ```
+
+Al iniciar, la aplicación crea automáticamente la base de datos y sus tablas (si no existen todavía) en `app/bd_clientes.squlite3`.
 
 ### 5. Abre la documentación interactiva
 
@@ -68,11 +90,13 @@ cd app
 http://127.0.0.1:8000/docs
 ```
 
+Desde ahí puedes probar todos los endpoints directamente con la interfaz de **Swagger UI**.
+
 ---
 
-##Endpoints disponibles
+## 🔗 Endpoints disponibles
 
-###Clientes
+### Clientes
 
 | Método | Ruta | Descripción |
 |--------|------|-------------|
@@ -82,29 +106,29 @@ http://127.0.0.1:8000/docs
 | PATCH | `/clientes/{cliente_id}` | Edita un cliente existente |
 | DELETE | `/clientes/{cliente_id}` | Elimina un cliente |
 
-###Facturas
+### Facturas
 
 | Método | Ruta | Descripción |
 |--------|------|-------------|
 | GET | `/facturas` | Lista todas las facturas |
 | GET | `/facturas/{factura_id}` | Obtiene una factura por ID |
 | POST | `/facturas/{cliente_id}` | Crea una factura para un cliente |
-| PATCH | `/facturas/{id_factura}` | Edita una factura (en desarrollo) |
-| DELETE | `/facturas/{id_factura}` | Elimina una factura (en desarrollo) |
+| PATCH | `/facturas/{id_factura}` | Edita una factura |
+| DELETE | `/facturas/{id_factura}` | Elimina una factura |
 
-###Transacciones
+### Transacciones
 
 | Método | Ruta | Descripción |
 |--------|------|-------------|
 | GET | `/transacciones` | Lista todas las transacciones |
-| GET | `/transacciones/{id}` | Obtiene una transacción por ID (en desarrollo) |
-| POST | `/transacciones/{factura_id}` | Crea una transacción en una factura |
-| PATCH | `/transacciones/{id}` | Edita una transacción (en desarrollo) |
-| DELETE | `/transacciones/{id}` | Elimina una transacción (en desarrollo) |
+| GET | `/transacciones/{id}` | Obtiene una transacción por ID |
+| POST | `/transacciones/{factura_id}` | Crea una transacción asociada a una factura |
+| PATCH | `/transacciones/{id}` | Edita una transacción |
+| DELETE | `/transacciones/{id}` | Elimina una transacción |
 
 ---
 
-###Modelos de datos
+## 🗃️ Modelos de datos
 
 ### Cliente
 ```json
@@ -121,6 +145,7 @@ http://127.0.0.1:8000/docs
 {
   "id": 1,
   "fecha": "2026-06-22",
+  "cliente_id": 1,
   "cliente": { ... },
   "transacciones": [ ... ],
   "vr_total": 150000.0
@@ -133,20 +158,28 @@ http://127.0.0.1:8000/docs
   "id": 1,
   "factura_id": 1,
   "cantidad": 3,
-  "vr_unitario": 50000.0
+  "vr_unitario": 50000.0,
+  "descripcion": "Detalle de la transacción"
 }
 ```
 
 ---
 
-##Notas
+## 🔁 Relaciones entre entidades
 
-- Los datos se almacenan en memoria (listas). Al reiniciar el servidor se pierden.
-- La conexión a base de datos está en desarrollo (`conexion_bd.py`).
-- El campo `vr_total` en Factura se calcula automáticamente sumando `cantidad * vr_unitario` de cada transacción asociada.
+- Un **Cliente** puede tener muchas **Facturas** (relación uno a muchos).
+- Una **Factura** puede tener muchas **Transacciones** (relación uno a muchos).
+- El campo `vr_total` de una **Factura** se calcula automáticamente como la suma de `cantidad * vr_unitario` de todas sus transacciones asociadas, mediante un `computed_field`.
 
 ---
 
-##Autor
+## 📝 Notas
+
+- Los datos se almacenan de forma persistente en una base de datos SQLite (`app/bd_clientes.squlite3`), no en memoria.
+- Las tablas se crean automáticamente al iniciar la aplicación (`crear_tablas` en `conexion_bd.py`), siempre y cuando no existan previamente. Si se modifica un modelo (por ejemplo, se agrega una nueva columna), es necesario eliminar el archivo de base de datos para que se regenere con la nueva estructura, ya que el proyecto aún no implementa migraciones (por ejemplo, con Alembic).
+
+---
+
+## 👤 Autor
 
 **juan3625** — [github.com/juan3625](https://github.com/juan3625) — Juan Felipe Zapata Torres
