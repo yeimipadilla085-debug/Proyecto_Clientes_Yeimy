@@ -1,6 +1,6 @@
 # TECNOLOGIA: FastAPI
 
-# AUTOR: Instructor Yeimy
+# AUTOR: Yeimy
 
 # DESCRIPCION: Sistema de Gestión de Facturación y Transacciones (API de Aprendizaje)
 
